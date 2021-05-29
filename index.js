@@ -93,8 +93,15 @@ schedule.scheduleJob("* * * * *", async() => {
 
                 if (!config.languages[language]?.fetchNews) continue
 
-                if (!typeData?.news?.languages[language]) {
-                    const obj = data.prices.get(financeData[i].type, `${financeData[i].id}.news`)
+                if (!typeData?.news) {
+                    data.prices.set(financeData[i].type, {}, financeData[i].id)
+                }
+
+                if (!typeData.news?.languages[language]) {
+                    let obj = data.prices.get(financeData[i].type, `${financeData[i].id}.news.languages`)
+
+                    if (!obj) obj = {}
+
                     const updatedObj = Object.assign(obj, { [language]: [] })
 
                     data.prices.set(financeData[i].type, updatedObj, `${financeData[i].id}.news.languages`)
