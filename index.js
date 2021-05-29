@@ -94,14 +94,14 @@ schedule.scheduleJob("* * * * *", async() => {
                 if (!config.languages[language]?.fetchNews) continue
 
                 if (!typeData?.news?.languages[language]) {
-                    const obj = data.prices.get(financeData[i].type, `${financeData[i].id}.news.languages`)
+                    const obj = data.prices.get(financeData[i].type, `${financeData[i].id}.news`)
                     const updatedObj = Object.assign(obj, { [language]: [] })
 
-                    await data.prices.set(financeData[i].type, updatedObj, `${financeData[i].id}.news.languages`)
+                    data.prices.set(financeData[i].type, updatedObj, `${financeData[i].id}.news.languages`)
                 }
 
                 if (!typeData?.news?.lastFetch) {
-                    await data.prices.set(financeData[i].type, { lastFetch: 0 }, `${financeData[i].id}.news`)
+                    data.prices.set(financeData[i].type, { lastFetch: 0 }, `${financeData[i].id}.news`)
                 }
                 
                 if (!(Date.now() - typeData.news.lastFetch > 10 * 60 * 60 * 1000)) continue
@@ -110,11 +110,11 @@ schedule.scheduleJob("* * * * *", async() => {
                     if (!json || !json.articles) return
 
                     if (j + 1 === length) {
-                        await data.prices.set(financeData[i].type, Date.now(), `${financeData[i].id}.news.lastFetch`)
+                        data.prices.set(financeData[i].type, Date.now(), `${financeData[i].id}.news.lastFetch`)
                         j = 0
                     }
     
-                    await data.prices.set(financeData[i].type, json, `${financeData[i].id}.news.languages.${language}`)
+                    data.prices.set(financeData[i].type, json, `${financeData[i].id}.news.languages.${language}`)
                 }))
             }
         } catch(err) {
@@ -137,12 +137,12 @@ schedule.scheduleJob("* * * * *", async() => {
 
             price.unshift({ price: lastPrice, date: Date.now() })
 
-            await data.prices.set(financeData[i].type, price, `${financeData[i].id}.prices`)
+            data.prices.set(financeData[i].type, price, `${financeData[i].id}.prices`)
         } catch(err) {
             logger.error(err)
         }
 
-        await logger.update({ message: `Ajout : ${financeData[i].id} (${financeData[i].type}) (${i+1}/${financeData.length})`, end: i + 1 === financeData.length, startDate: startDate, traitementMaxTime: 10 })
+        logger.update({ message: `Ajout : ${financeData[i].id} (${financeData[i].type}) (${i+1}/${financeData.length})`, end: i + 1 === financeData.length, startDate: startDate, traitementMaxTime: 10 })
     }
 
     /*
@@ -197,23 +197,23 @@ function genId() {
 async function createAccount(type, typeData) {
     const id = genId()
 
-    await data.users.set(id, {
+    data.users.set(id, {
         lang: "fr_FR",
         money: 20
     })
 
     if (type && plateform.includes(type) && typeData) {
-        await data.users.set(id, typeData, type)
+        data.users.set(id, typeData, type)
     }
 
-    const account = await data.users.get(id)
+    const account = data.users.get(id)
 
     return { success: true, accountID: id, account: account }
 }
 
 async function deleteAllAccount() {
-    await data.users.forEach(async(content, id) => {
-        await data.users.delete(id)
+    data.users.forEach(async(content, id) => {
+        data.users.delete(id)
     })
 
     return { success: true }
@@ -240,7 +240,7 @@ async function addAccount(id, type, typeData) {
         return { success: false, error: "error.already_active" }
     }
 
-    const account = await data.users.set(id, typeData, type)
+    const account = data.users.set(id, typeData, type)
 
     return { success: true, accountID: id, account: account }
 }
@@ -262,7 +262,7 @@ async function addMoney(id, number) {
         return { success: false, error: "error.missing_data"}
     }
 
-    const newUserData = await data.users.set(id, number, "money")
+    const newUserData = data.users.set(id, number, "money")
 
     console.log(newUserData)
 
