@@ -15,7 +15,7 @@ const DiscordClient = require("./discord/index")
 const Sentry = require("@sentry/node")
 
 Sentry.init({
-    dsn: "https://ccb5d4d1f80244a2bafbe318029e3d90@o427217.ingest.sentry.io/5763884",
+    dsn: config.tokens.sentryDSN,
     tracesSampleRate: 1.0,
 })
 
