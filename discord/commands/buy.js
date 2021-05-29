@@ -27,18 +27,7 @@ module.exports = class Buy extends Command {
         console.log(find)
 
         const link = (crypto) => `https://min-api.cryptocompare.com/data/price?fsym=USD&tsyms=${crypto}`
-
-        const btn = new MessageButton()
-            .setStyle("red")
-            .setLabel("e")
-            .setID("buy_buy")
-
-        console.log(btn)
-
-        message.channel.send("e", {
-            buttons: [ btn ]
-        })
-
+        
         //message.lineReplyNoMention(i18n.__("discord.buy.1234567eee"))
     }
 }
