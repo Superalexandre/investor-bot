@@ -1,0 +1,9 @@
+#Config (with tokens)
+config.js
+
+#NPM Modules
+node_modules
+package-lock.json
+
+#Database
+data
