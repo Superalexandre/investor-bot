@@ -18,6 +18,7 @@
   "author": "Alexandre R",
   "license": "ISC",
   "dependencies": {
+    "@sentry/node": "^6.4.1",
     "colors": "^1.4.0",
     "date-fns": "^2.22.0",
     "date-fns-tz": "^1.1.4",
