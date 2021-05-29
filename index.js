@@ -63,17 +63,19 @@ i18n.configure({
     }
 })
 
-const autoFetch = config.autoFetch
-schedule.scheduleJob("* * * * *", async() => {
-    if (!autoFetch) return
-
+//const autoFetch = config.autoFetch
+//schedule.scheduleJob("* * * * *", async() => {
+async function e() {
+    //if (!autoFetch) return
+    
     const financeData = config.financeData
     const startDate = Date.now()
 
+
     for (let i = 0; i < financeData.length; i++) {
-        if (!data.prices.get(financeData[i].type) || !data.prices.get(financeData[i].type, financeData[i].id)) {
-            data.prices.set(financeData[i].type, { symbol: financeData[i].symbol, prices: [] }, financeData[i].id)
-        }
+        const type = financeData[i].type
+        const id = financeData[i].id
+        const symbol = financeData[i].symbol
 
         const getApi = (data) => {
             if (data.type === "crypto") return `https://api.coingecko.com/api/v3/coins/${data.id}`
@@ -82,80 +84,67 @@ schedule.scheduleJob("* * * * *", async() => {
             return undefined
         }
 
-        let typeData = await data.prices.get(financeData[i].type, financeData[i].id)
+        //Check if all data exist
+        if (!data.prices.get(type)) data.prices.set(type, {})
+        if (!data.prices.get(type, id)) data.prices.set(type, {}, id)
+        if (!data.prices.get(type, `${id}.symbol`)) data.prices.set(type, symbol, `${id}.symbol`)
+        if (!data.prices.get(type, `${id}.prices`)) data.prices.set(type, [], `${id}.prices`)
+        if (!data.prices.get(type, `${id}.news`)) data.prices.set(type, {}, `${id}.news`)
+        if (!data.prices.get(type, `${id}.news.lastFetch`)) data.prices.set(type, Date.now(), `${id}.news.lastFetch`)
+        if (data.prices.get(type, `${id}.news.lastFetch`) === 0) data.prices.set(type, Date.now(), `${id}.news.lastFetch`)
+        if (!data.prices.get(type, `${id}.news.languages`)) data.prices.set(type, {}, `${id}.news.languages`)
 
-        /* News */
-        try {
-            let j = 0
-            for (const language in config.languages) {
-                const length = Object.size(config.languages)
-                j++
+        let typeData = data.prices.get(type, id)
 
-                if (!config.languages[language]?.fetchNews) continue
+        //News
+        let j = 0
+        const lengthLanguages = Object.keys(config.languages).length
+        for (const language in config.languages) {
+            
+            //if (!typeData.news.languages[language]) {
+            //    const updatedObj = Object.assign(data.prices.get(type, `${id}.news.languages`), { [language]: {} })
+            //
+            //    data.prices.set(financeData[i].type, updatedObj, `${id}.news.languages`)
+            //
+            //    typeData = data.prices.get(type, id)
+            //}
 
-                if (!typeData?.news) {
-                    typeData = data.prices.set(financeData[i].type, {}, financeData[i].id)
-                }
+            if (Date.now() - typeData.news.lastFetch > 10 * 60 * 60 * 1000) continue
 
-                if (!typeData.news?.languages || !typeData.news?.languages[language]) {
-                    let obj = data.prices.get(financeData[i].type, `${financeData[i].id}.news.languages`)
+            const res = await fetch(`https://newsapi.org/v2/top-headlines?q=${financeData[i].name}&category=business&language=${config.languages[language].short}&apiKey=${config.tokens.news}`)
+            const json = await res.json()
 
-                    if (!obj) obj = {}
+            if (!json || !json.articles) continue
 
-                    const updatedObj = Object.assign(obj, { [language]: [] })
+            console.log(j)
 
-                    typeData = data.prices.set(financeData[i].type, updatedObj, `${financeData[i].id}.news.languages`)
-                }
-
-                if (!typeData.news.lastFetch) {
-                    typeData = data.prices.set(financeData[i].type, 0, `${financeData[i].id}.news.lastFetch`)
-                }
-                
-                if (Date.now() - typeData.news.lastFetch < 10 * 60 * 60 * 1000) continue
-
-                await fetch(`https://newsapi.org/v2/top-headlines?q=${financeData[i].name}&category=business&language=${config.languages[language].short}&apiKey=${config.tokens.news}`).then(fetchData => fetchData.json().then(async(json) => {
-                    if (!json || !json.articles) return
-
-                    if (j + 1 === length) {
-                        typeData = data.prices.set(financeData[i].type, Date.now(), `${financeData[i].id}.news.lastFetch`)
-                        j = 0
-                    }
-    
-                    typeData = data.prices.set(financeData[i].type, json, `${financeData[i].id}.news.languages.${language}`)
-                }))
+            if (j + 1 === lengthLanguages) {
+                typeData = data.prices.set(financeData[i].type, Date.now(), `${financeData[i].id}.news.lastFetch`)
+                j = 0
             }
-        } catch(err) {
-            logger.error(err)
+
+            data.prices.set(financeData[i].type, json, `${financeData[i].id}.news.languages.${language}`)
         }
 
-        if (!typeData.prices) {
-            typeData = data.prices.set(financeData[i].type, [], `${financeData[i].id}.prices`)
-        }
+        //Prices
+        const res = await fetch(getApi(financeData[i]))
+        const json = await res.json()
 
-        /* Prices */
-        try {
-            const res = await fetch(getApi(financeData[i]))
-            const body = await res.text()
+        if (!json) continue
 
-            if (!body) continue
+        let price = typeData.prices
+        let lastPrice = json["c"] ? json["c"] : json.market_data?.current_price?.usd
 
-            let price = typeData.prices
-            let lastPrice = body["c"] ? body["c"] : body.market_data?.current_price?.usd
+        if (!lastPrice) continue
 
-            if (!lastPrice) continue
+        if (price[0] && price[0].price === lastPrice) continue
 
-            if (price[0] && price[0].price === lastPrice) continue
+        price.unshift({ price: lastPrice, date: Date.now() })
 
-            price.unshift({ price: lastPrice, date: Date.now() })
+        data.prices.set(financeData[i].type, price, `${financeData[i].id}.prices`)
 
-            typeData = data.prices.set(financeData[i].type, price, `${financeData[i].id}.prices`)
-        } catch(err) {
-            logger.error(err)
-        }
-
-        logger.update({ message: `Ajout : ${financeData[i].id} (${financeData[i].type}) (${i+1}/${financeData.length})`, end: i + 1 === financeData.length, startDate: startDate, traitementMaxTime: 10 })
+        //logger.update({ message: `Ajout : ${financeData[i].id} (${financeData[i].type}) (${i+1}/${financeData.length})`, end: i + 1 === financeData.length, startDate: startDate, traitementMaxTime: 10 })
     }
-
     /*
         prices: {
             crypto: {
@@ -181,7 +170,9 @@ schedule.scheduleJob("* * * * *", async() => {
             }
         }
     */
-})
+}
+
+e()
 
 Object.size = function(obj) {
     let size = 0, key;
