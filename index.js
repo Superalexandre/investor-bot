@@ -107,11 +107,11 @@ schedule.scheduleJob("* * * * *", async() => {
                     data.prices.set(financeData[i].type, updatedObj, `${financeData[i].id}.news.languages`)
                 }
 
-                if (!typeData?.news?.lastFetch) {
+                if (!typeData.news?.lastFetch) {
                     data.prices.set(financeData[i].type, { lastFetch: 0 }, `${financeData[i].id}.news`)
                 }
                 
-                if (!(Date.now() - typeData.news.lastFetch > 10 * 60 * 60 * 1000)) continue
+                if (Date.now() - typeData.news.lastFetch < 10 * 60 * 60 * 1000) continue
 
                 await fetch(`https://newsapi.org/v2/top-headlines?q=${financeData[i].name}&category=business&language=${config.languages[language].short}&apiKey=${config.tokens.news}`).then(fetchData => fetchData.json().then(async(json) => {
                     if (!json || !json.articles) return
