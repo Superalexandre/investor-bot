@@ -63,10 +63,9 @@ i18n.configure({
     }
 })
 
-//const autoFetch = config.autoFetch
-//schedule.scheduleJob("* * * * *", async() => {
-async function e() {
-    //if (!autoFetch) return
+const autoFetch = config.autoFetch
+schedule.scheduleJob("* * * * *", async() => {
+    if (!autoFetch) return
     
     const financeData = config.financeData
     const startDate = Date.now()
@@ -98,6 +97,7 @@ async function e() {
 
         //News
         let j = 0
+        let newsFetched = false
         const lengthLanguages = Object.keys(config.languages).length
         for (const language in config.languages) {
             
@@ -116,7 +116,7 @@ async function e() {
 
             if (!json || !json.articles) continue
 
-            console.log(j)
+            newsFetched = true
 
             if (j + 1 === lengthLanguages) {
                 typeData = data.prices.set(financeData[i].type, Date.now(), `${financeData[i].id}.news.lastFetch`)
@@ -143,7 +143,9 @@ async function e() {
 
         data.prices.set(financeData[i].type, price, `${financeData[i].id}.prices`)
 
-        //logger.update({ message: `Ajout : ${financeData[i].id} (${financeData[i].type}) (${i+1}/${financeData.length})`, end: i + 1 === financeData.length, startDate: startDate, traitementMaxTime: 10 })
+        if (newsFetched) process.exit(0)
+
+        logger.update({ message: `Ajout : ${financeData[i].id} (${financeData[i].type}) (${i+1}/${financeData.length}) (news fetch : ${newsFetched})`, end: i + 1 === financeData.length, startDate: startDate, traitementMaxTime: 10 })
     }
     /*
         prices: {
@@ -170,9 +172,7 @@ async function e() {
             }
         }
     */
-}
-
-e()
+})
 
 Object.size = function(obj) {
     let size = 0, key;
