@@ -72,7 +72,7 @@ schedule.scheduleJob("* * * * *", async() => {
 
     for (let i = 0; i < financeData.length; i++) {
         if (!data.prices.get(financeData[i].type) || !data.prices.get(financeData[i].type, financeData[i].id)) {
-            await data.prices.set(financeData[i].type, { symbol: financeData[i].symbol, prices: [] }, financeData[i].id)
+            data.prices.set(financeData[i].type, { symbol: financeData[i].symbol, prices: [] }, financeData[i].id)
         }
 
         const getApi = (data) => {
