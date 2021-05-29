@@ -1,0 +1,108 @@
+{
+	"error": {
+		"missingTranslation": "Une erreur de traduction est servenue !",
+		"errorOccured": "Une erreur inconnu est survenue\n```{{error}}```",
+		"%s missingUserPermission": {
+			"one": "Pour executer cette commande il vous manque la permission :",
+			"other": "Pour executer cette commande il vous manque les permissions :\n"
+		},
+		"%s missingBotPermission": {
+			"one": "Pour executer cette commande il me manque la permission :",
+			"other": "Pour executer cette commande il me manque les permissions :\n"
+		},
+		"data": "Valeur manquante impossible d'ajouter un compte",
+		"plateform": "Impossible de crée un compte la plateforme saisi n'est pas valide",
+		"id_invalid": "Impossible de crée un compte, l'identifiant saisi n'est pas valide",
+		"already_active": "Un compte de ce type est deja actif a cette plateforme",
+		"no_account": "Identifiant invalide merci de verifier celui ci",
+		"missing_data": "Erreur dans la base de données il manque trop de données"
+	},
+	"discord": {
+		"mentionned": "Bonjour je serais ravis de vous aidez ! Mon prefix est `{{prefix}}`",
+		"no_desc_provided": "Aucune description fourni",
+		"no_use_provided": "Aucun usage fourni",
+		"no_example_provided": "Aucun exemple fourni",
+		"eval": {
+			"desc": "Executer du code Javascript",
+			"use": "eval [code Javascript]",
+			"example": "eval message.channel.send(\"Hello world!\")",
+			"missingArg": "Merci de saisir du code javascript"
+		},
+		"help": {
+			"desc": "Permet d'avoir la liste des commandes ou d'avoir plus d'information sur une commande en particulier",
+			"use": "help (nom de la commande)",
+			"example": "help profil",
+			"help_title": "Liste des commandes",
+			"help_footer": "() : optionnel • [] : obligatoire • | : Choix a faire",
+			"no_command_found": "Aucune commande trouvé pour {{commandName}}",
+			"help_title_command": "Information sur la commande {{commandName}}",
+			"alias": "Alias :",
+			"no_alias": "Aucun alias pour cette commande",
+			"description": "Description :",
+			"usage": "Usage :",
+			"example_f": "Exemple :",
+			"bot_perm": "Permission(s) requise pour le bot :",
+			"user_perm": "Permission(s) require pour l'utilisateur :",
+			"no_perm": "Aucune permission requise"
+		},
+		"profile": {
+			"desc": "Permet de voir vos statistiques",
+			"use": "profil (Mention, id, nom d'utilisateur)",
+			"example": "profil (@Superalexandre#2710, 253569074431262720, Superalexandre)",
+			"title": "Profil de {{username}}",
+			"money": "Argent possédé :",
+			"no_investment": "Aucun investissement éfféctué",
+			"top3": "Top 3 des actions les plus investis",
+			"top5": "Top 5 des actions les plus investis",
+			"top10": "Top 10 des actions les plus investis"
+		},
+		"ping": {
+			"desc": "Permet d'avoir le ping du robot",
+			"use": "ping",
+			"example": "ping",
+			"title": "Ping du robot",
+			"calculation": "Calcul",
+			"message": "Message",
+			"send": "Temps d'envoie :",
+			"processing": "Temps de traitement :",
+			"total": "Total :",
+			"edit": "Temps de modifcation :",
+			"discord_api": "Temps de réponse de l'api de Discord",
+			"database": "Base de données",
+			"database_add": "Ajout :",
+			"database_edit": "Modifcation :",
+			"database_delete": "Supression :"
+		},
+		"info": {
+			"desc": "Optenir toute les données a propos d'une action ou d'une crypto monnaie",
+			"use": "info (type | nom)",
+			"example": "info (crypto | bitcoin)",
+			"title_no_args": "Liste des investissements possible",
+			"crypto": "Cryptomonnaies :",
+			"action": "Actions :",
+			"no_prices_no_data": "Aucun prix n'a été trouvé (Erreur dans les données)",
+			"args_not_found": "Aucune donnée trouvé pour {{arg}}",
+			"args_not_found_alternative": "L'argument saisi est invalide\nVous vouliez peut etre dire",
+			"alternative_yes": "si \"oui\" cliquez sur ✅ (vous avez 30 secondes)",
+			"info_crypto": "Information sur la crypto {{name}}",
+			"info_action": "Information sur l'action {{name}}",
+			"error_more_10h": "Erreur dans les données (les derniers prix sont trop vieux)",
+			"last_prices": "Les derniers prix :",
+			"now": "Maintenant",
+			"%s minutes": {
+				"one": "Il y a %s minute",
+				"other": "Il y a %s minutes"
+			},
+			"graph": "Courbe du {{name}}",
+			"actual_price": "Prix actuelle",
+			"%s last_prices": {
+				"one": "Dernier prix :",
+				"other": "%s derniers prix :"
+			},
+			"too_late": "Les 30 secondes sont passées, trop tard !",
+			"unknow_sort": "Je n'ais pas compris l'argument {{name}} pour trier",
+			"articlesSuite": "suite"
+		},
+		"buy": {}
+	}
+}

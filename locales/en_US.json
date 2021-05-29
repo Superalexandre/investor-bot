@@ -1,0 +1,108 @@
+{
+	"error": {
+		"missingTranslation": "A translation error was made!",
+		"errorOccured": "An unknown error has occurred\n```{{error}}```",
+		"%s missingUserPermission": {
+			"one": "To execute this command you need the permission :",
+			"other": "To execute this command you need the permissions :"
+		},
+		"%s missingBotPermission": {
+			"one": "To execute this command I need the permission :",
+			"other": "To execute this command I need the permissions :"
+		},
+		"data": "Missing value impossible to add an account",
+		"plateform": "Unable to create an account the platform entered is not valid",
+		"id_invalid": "Impossible to create an account, the login entered is not valid",
+		"already_active": "One such account is already active on this platform",
+		"no_account": "Invalid login please check this one",
+		"missing_data": "Error in the database, too much data is missing"
+	},
+	"discord": {
+		"mentionned": "Hello I would be happy to help you! My prefix is `{{prefix}}`",
+		"no_desc_provided": "No description provided",
+		"no_use_provided": "No usage provided",
+		"no_example_provided": "No examples provided",
+		"eval": {
+			"desc": "Execute javascript code",
+			"use": "eval [Javascript code]",
+			"example": "eval message.channel.send(\"Hello world!\")",
+			"missingArg": "Missing argument please enter javascript code"
+		},
+		"help": {
+			"desc": "Allows you to have the list of orders or to have more information on a particular order",
+			"use": "help (Command name)",
+			"example": "help profile",
+			"help_title": "List of orders",
+			"help_footer": "() : optional • [] : required • | : Choice to make",
+			"no_command_found": "No commands found for {{commandName}}",
+			"help_title_command": "Command information {{commandName}}",
+			"alias": "Aliases :",
+			"no_alias": "No alias for this command",
+			"description": "Description :",
+			"usage": "Usage :",
+			"example_f": "Example :",
+			"bot_perm": "Permission(s) required for the bot :",
+			"user_perm": "Permission(s) required for the user :",
+			"no_perm": "No permission required"
+		},
+		"profile": {
+			"desc": "Allows you to see your statistics",
+			"use": "profile (Mention, id, username)",
+			"example": "profile (@Superalexandre#2710, 253569074431262720, Superalexandre)",
+			"title": "Profile of {{username}}",
+			"money": "Money possessed :",
+			"no_investment": "No investment made",
+			"top3": "Top 3 most invested stocks",
+			"top5": "Top 5 most invested stocks",
+			"top10": "Top 10 most invested stocks"
+		},
+		"ping": {
+			"desc": "Allows to have the ping of the robot",
+			"use": "ping",
+			"example": "ping",
+			"title": "Ping of the bot",
+			"calculation": "Calculation",
+			"message": "Message",
+			"send": "Sending time :",
+			"processing": "Processing time :",
+			"total": "Total :",
+			"edit": "Modification time :",
+			"discord_api": "Response time of the Discord api",
+			"database": "Database",
+			"database_add": "Add :",
+			"database_edit": "Update :",
+			"database_delete": "Supression :"
+		},
+		"info": {
+			"desc": "Get all the data on a stock or cryptocurrency",
+			"use": "info (type | name)",
+			"example": "info (crypto | bitcoin)",
+			"title_no_args": "List of possible investments",
+			"crypto": "Cryptocurrencies :",
+			"action": "Stocks :",
+			"no_prices_no_data": "No price was found (Error in the data)",
+			"args_not_found": "No data found for {{arg}}",
+			"args_not_found_alternative": "The argument entered is invalid\nPerhaps you meant",
+			"alternative_yes": "if \"yes\" click on ✅ (you have 30 seconds)",
+			"info_crypto": "Information on the crypto {{name}}",
+			"info_action": "Information on the action {{name}}",
+			"error_more_10h": "Error in the data (the last prices are too old)",
+			"last_prices": "Latest prices :",
+			"now": "Now",
+			"%s minutes": {
+				"one": "%s minute ago",
+				"other": "%s minutes ago"
+			},
+			"graph": "{{name}} curve",
+			"actual_price": "Current price",
+			"%s last_prices": {
+				"one": "Last price :",
+				"other": "Last %s prices :"
+			},
+			"too_late": "The 30 seconds have passed, too late!",
+			"unknow_sort": "I did not understand the {{name}} argument to sort",
+			"articlesSuite": "suite"
+		},
+		"buy": {}
+	}
+}
