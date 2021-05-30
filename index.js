@@ -282,7 +282,7 @@ async function getHistoricalData(data, from, to) {
     //Price = price
 
     //Return
-    return { success: true, price: 0, date: Date.now() }
+    return { success: true, price: 0, date: from }
 }
 
 const functions = { genId, createAccount, addAccount, checkMissingData, deleteAllAccount, addMoney, removeMoney, getHistoricalData }
