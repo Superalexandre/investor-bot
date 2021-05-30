@@ -16,15 +16,30 @@ module.exports = class Button extends Command {
 
     async run({ client, message, args, i18n, data, userData, util }) {
         const goToCrypto = new MessageButton()
-        .setLabel("Allez vers : cryptos")
-        .setStyle("blurple")
-        .setID("info_goto_crypto")
+            .setLabel("Allez vers : cryptos")
+            .setStyle("blurple")
+            .setID("info_goto_crypto")
     
         const goToAction = new MessageButton()
             .setLabel("Allez vers : actions")
             .setStyle("blurple")
             .setID("info_goto_action")
 
-        message.channel.send("Bonjour c un peu chiant la", { buttons: [ goToAction, goToCrypto ] })
+        const goToActionTesla = new MessageButton()
+            .setLabel("Allez vers : Tesla (action)")
+            .setStyle("blurple")
+            .setID("info_goto_action_tesla")
+
+        const goToCryptoBitcoin = new MessageButton()
+            .setLabel("Allez vers : Bitcoin (crypto)")
+            .setStyle("blurple")
+            .setID("info_goto_crypto_bitcoin")
+
+        const goToCryptoBitcoin10D = new MessageButton()
+            .setLabel("Allez vers : Bitcoin (crypto) (trie par 10jours)")
+            .setStyle("blurple")
+            .setID("info_goto_crypto_bitcoin_10d")
+
+        message.channel.send("Bonjour c un peu chiant la", { buttons: [ goToAction, goToCrypto, goToActionTesla, goToCryptoBitcoin, goToCryptoBitcoin10D ] })
     }
 }
