@@ -127,23 +127,27 @@ schedule.scheduleJob("* * * * *", async() => {
         }
 
         //Prices
-        const res = await fetch(getApi(financeData[i]))
-        const json = await res.json()
+        await fetch(getApi(financeData[i])).then(rep => {
+            rep.json().then(async(json) => {
+                if (!json) return
 
-        if (!json) continue
+                let price = typeData.prices
+                let lastPrice = json["c"] ? json["c"] : json.market_data?.current_price?.usd
 
-        let price = typeData.prices
-        let lastPrice = json["c"] ? json["c"] : json.market_data?.current_price?.usd
+                if (!lastPrice) return
 
-        if (!lastPrice) continue
+                if (price[0] && price[0].price === lastPrice) return
 
-        if (price[0] && price[0].price === lastPrice) continue
+                await price.unshift({ price: lastPrice, date: Date.now() })
 
-        price.unshift({ price: lastPrice, date: Date.now() })
+                data.prices.set(financeData[i].type, price, `${financeData[i].id}.prices`)
 
-        data.prices.set(financeData[i].type, price, `${financeData[i].id}.prices`)
-
-        if (newsFetched) process.exit(0)
+                if (newsFetched) {
+                    console.log(true)
+                    process.exit(0)
+                }
+            })
+        })
 
         logger.update({ message: `Ajout : ${financeData[i].id} (${financeData[i].type}) (${i+1}/${financeData.length}) (news fetch : ${newsFetched})`, end: i + 1 === financeData.length, startDate: startDate, traitementMaxTime: 10 })
     }
@@ -173,6 +177,7 @@ schedule.scheduleJob("* * * * *", async() => {
         }
     */
 })
+
 
 Object.size = function(obj) {
     let size = 0, key;
