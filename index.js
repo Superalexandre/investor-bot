@@ -141,11 +141,6 @@ schedule.scheduleJob("* * * * *", async() => {
                 await price.unshift({ price: lastPrice, date: Date.now() })
 
                 data.prices.set(financeData[i].type, price, `${financeData[i].id}.prices`)
-
-                if (newsFetched) {
-                    console.log(true)
-                    process.exit(0)
-                }
             })
         })
 
