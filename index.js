@@ -70,7 +70,6 @@ schedule.scheduleJob("* * * * *", async() => {
     const financeData = config.financeData
     const startDate = Date.now()
 
-
     for (let i = 0; i < financeData.length; i++) {
         const type = financeData[i].type
         const id = financeData[i].id
@@ -144,7 +143,7 @@ schedule.scheduleJob("* * * * *", async() => {
             })
         })
 
-        logger.update({ message: `Ajout : ${financeData[i].id} (${financeData[i].type}) (${i+1}/${financeData.length}) (news fetch : ${newsFetched})`, end: i + 1 === financeData.length, startDate: startDate, traitementMaxTime: 10 })
+        logger.update({ message: `Ajout : ${financeData[i].id} (${financeData[i].type}) (${i+1}/${financeData.length}) (News fetched : ${newsFetched})`, end: i + 1 === financeData.length, startDate: startDate, traitementMaxTime: 10 })
     }
     /*
         prices: {
