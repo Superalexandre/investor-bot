@@ -29,7 +29,9 @@ module.exports = class Info extends Command {
             let desc = ""
             let i = 0
 
-            for (const type of dataPrices.keys()) {     
+            for (const type of dataPrices.keys()) {
+                console.log(type)
+                
                 desc += `${i > 0 ? "\n\n": ""}__${i18n.__(`discord.info.${type}`)}__\n`
                 const typeIds = client.data.prices.get(type)
 
@@ -44,6 +46,8 @@ module.exports = class Info extends Command {
                 }
             }
             
+            if (!desc || desc.length <= 0) desc += "Data error, no data found"
+
             const embed = new MessageEmbed()
                 .setTitle(i18n.__("discord.info.title_no_args"))
                 .setDescription(desc)
@@ -59,7 +63,7 @@ module.exports = class Info extends Command {
                 .setStyle("blurple")
                 .setID("info_goto_action")
 
-            await message.lineReplyNoMention("bonjour", {
+            await message.lineReplyNoMention({
                 buttons: [ goToCrypto, goToAction ],
                 embed: embed
             })
@@ -155,43 +159,46 @@ async function typeEmbed(message, args, client, type, allList, i18n, messageActi
         .setTitle("Liste des " + type.name)
         .setColor(client.config.colors.yellow)
 
-
-    for (let i = 0; i < list.length; i++) {
-        const typePrices = client.data.prices.get(type.name, list[i].id)?.prices
-
-        if (!typePrices) return message.lineReplyNoMention("Error typePrices in typeEmbed (info)")
-
-        let lastPrice = {
-            "0": {},
-            "1": {},
-            "2": {},
-            "3": {}
-        }
-
-        for (const daysAgo in lastPrice) {
-            const day = parseInt(daysAgo)
-            const dayAgoDate = new Date().getTime() - (day * 24 * 60 * 60 * 1000)
-        
-            const priceDayAgo = typePrices.slice().sort((a, b) => sortDate(a, b, dayAgoDate))
+    if (client.data.prices.get(type.name)) {
+        for (let i = 0; i < list.length; i++) {
+            const typePrices = client.data.prices.get(type.name, list[i].id)?.prices
     
-            if (priceDayAgo[0].date - dayAgoDate > 10 * 60 * 60 * 1000) {
-                lastPrice[daysAgo] = {
-                    price: 0,
-                    date: dayAgoDate,
-                    formatedDate: client.functions.compactDate(dayAgoDate),
-                    currencyPrice: i18n.__("discord.info.error_more_10h")
-                }
-            } else {
-                lastPrice[daysAgo] = { 
-                    price: priceDayAgo[0].price, 
-                    date: priceDayAgo[0].date,
-                    formatedDate: client.functions.compactDate(priceDayAgo[0].date),
-                    currencyPrice: priceDayAgo[0].price + "$" 
+            if (!typePrices) return message.lineReplyNoMention("Error typePrices in typeEmbed (info)")
+    
+            let lastPrice = {
+                "0": {},
+                "1": {},
+                "2": {},
+                "3": {}
+            }
+    
+            for (const daysAgo in lastPrice) {
+                const day = parseInt(daysAgo)
+                const dayAgoDate = new Date().getTime() - (day * 24 * 60 * 60 * 1000)
+            
+                const priceDayAgo = typePrices.slice().sort((a, b) => sortDate(a, b, dayAgoDate))
+        
+                if (priceDayAgo[0].date - dayAgoDate > 10 * 60 * 60 * 1000) {
+                    lastPrice[daysAgo] = {
+                        price: 0,
+                        date: dayAgoDate,
+                        formatedDate: client.functions.compactDate(dayAgoDate),
+                        currencyPrice: i18n.__("discord.info.error_more_10h")
+                    }
+                } else {
+                    lastPrice[daysAgo] = { 
+                        price: priceDayAgo[0].price, 
+                        date: priceDayAgo[0].date,
+                        formatedDate: client.functions.compactDate(priceDayAgo[0].date),
+                        currencyPrice: priceDayAgo[0].price + "$" 
+                    }
                 }
             }
+    
+            embed.addField(list[i].name, `\`\`\`diff\n${lastPrice["0"].price > lastPrice["1"].price  ? "+" : "-"} ${i18n.__("discord.info.now")} : ${lastPrice["0"].currencyPrice}\n${lastPrice["1"].price  > lastPrice["2"].price  ? "+" : "-"} 24h (${lastPrice["1"].formatedDate}) : ${lastPrice["1"].currencyPrice}\n${lastPrice["2"].price  > lastPrice["3"].price  ? "+" : "-"} 48h (${lastPrice["2"].formatedDate}) : ${lastPrice["2"].currencyPrice}\`\`\``, true)
         }
-
-        embed.addField(list[i].name, `\`\`\`diff\n${lastPrice["0"].price > lastPrice["1"].price  ? "+" : "-"} ${i18n.__("discord.info.now")} : ${lastPrice["0"].currencyPrice}\n${lastPrice["1"].price  > lastPrice["2"].price  ? "+" : "-"} 24h (${lastPrice["1"].formatedDate}) : ${lastPrice["1"].currencyPrice}\n${lastPrice["2"].price  > lastPrice["3"].price  ? "+" : "-"} 48h (${lastPrice["2"].formatedDate}) : ${lastPrice["2"].currencyPrice}\`\`\``, true)
+    } else {
+        embed.setDescription("Error no data found")
     }
 
     await message[messageAction](embed)
@@ -200,10 +207,15 @@ async function typeEmbed(message, args, client, type, allList, i18n, messageActi
 async function actionCryptoEmbed(message, args, client, type, typeData, i18n, messageAction) {
     const msg = await message[messageAction]("[Emote loading] Chargement en cours, cette action peu prendre du temps...")
 
+    const allType = client.data.prices.get(type)
+
+    if (!allType) return msg.edit("Error noType in actionCryptoEmbed (info)")
+
     const typePrices = client.data.prices.get(type, `${typeData.id}.prices`)
     const typeNews = client.data.prices.get(type, `${typeData.id}.news`)
 
-    if (!typePrices) return message.channel.send("Error typePrices in actionCryptoEmbed (info)")
+    if (!typePrices) return msg.edit("Error typePrices in actionCryptoEmbed (info)")
+    if (!typeNews) return msg.edit("Error typeNews in actionCryptoEmbed (info)")
 
     let lastPrice = {
         "0": {},
