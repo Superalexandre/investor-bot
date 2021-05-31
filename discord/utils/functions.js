@@ -301,6 +301,13 @@ async function typeEmbed(message, args, client, type, allList, i18n, messageActi
     await message[messageAction](embed)
 }
 
+function sortDate(a, b, dayAgo) {
+    let distancea = Math.abs(dayAgo - a.date)
+    let distanceb = Math.abs(dayAgo - b.date)
+    
+    return distancea - distanceb
+}
+
 module.exports = {
     formateDate,
     compactDate,
