@@ -248,8 +248,6 @@ async function addAccount(id, type, typeData) {
     return { success: true, accountID: id, account: account }
 }
 
-async function checkMissingData(id) { return false }
-
 async function addMoney(id, number) { 
     const userData = await data.users.get(id)
 
@@ -258,20 +256,73 @@ async function addMoney(id, number) {
     }
 
     if (!userData.money) {
-        const missingData = await checkMissingData(id)
-
-        console.log(missingData)
-
-        return { success: false, error: "error.missing_data"}
+        data.users.set(id, 20, "money")
     }
 
-    const newUserData = data.users.set(id, number, "money")
+    const newMoney = userData.money + number
+    const newUserData = data.users.set(id, newMoney, "money")
 
-    console.log(newUserData)
-
-    return { success: true, accountID: id, account: newUserData, newMoney: newUserData.money }
+    return { success: true, accountID: id, account: newUserData, newMoney: newMoney }
 }
-async function removeMoney(id, number) { return true }
+
+async function removeMoney(id, number) {
+
+    const userData = await data.users.get(id)
+
+    if (!userData) {
+        return { success: false, error: "error.no_account"}
+    }
+
+    if (!userData.money) {
+        data.users.set(id, 20, "money")
+    }
+
+    if (userData.money <= number) {
+        return { success: false, error: "Veuillez saisir un montant plus faible, vous n'avez pas les fonds" }
+    }
+
+    const newMoney = userData.money - number
+    const newUserData = data.users.set(id, newMoney, "money")
+
+    return { success: true, accountID: id, account: newUserData, newMoney: newMoney }
+}
+
+async function addStocks(id, type, name, number) {
+    let userData = await data.users.get(id)
+
+    if (!userData) {
+        return { success: false, error: "error.no_account"}
+    }
+
+    if (!userData.money) {
+        data.users.set(id, 20, "money")
+    }
+
+    if (!data.users.get(id, "stocks")) {
+        data.users.set(id, {}, "stocks")
+    }
+
+    if (!data.users.get(id, `stocks.${type}`)) {
+        data.users.set(id, {}, `stocks.${type}`)
+    }
+
+    if (!data.users.get(id, `stocks.${type}.${name}`)) {
+        data.users.set(id, { number: 0 }, `stocks.${type}.${name}`)
+    }
+
+    userData = await data.users.get(id)
+
+    const newStocksNumber = parseFloat(userData.stocks[type][name].number) + parseFloat(number)
+
+    const stats = userData?.stocks?.[type]?.[name]?.stats ? parseInt(userData.stocks[type][name].stats) : 0
+    const newStatsNumber = stats + 1
+
+    data.users.set(id, newStatsNumber, `stocks.${type}.${name}.stats`)
+    
+    const newUserData = data.users.set(id, newStocksNumber, `stocks.${type}.${name}.number`)
+
+    return { success: true, accountID: id, account: newUserData, newStocksNumber: newStocksNumber }
+}
 
 async function getHistoricalData(data, from, to) {
     //https://finnhub.io/api/v1/calendar/ipo?from=2020-01-01&to=2020-04-30&token=c1go49748v6v8dn0dajg
@@ -287,6 +338,6 @@ async function getHistoricalData(data, from, to) {
     return { success: true, price: 0, date: from }
 }
 
-const functions = { genId, createAccount, addAccount, checkMissingData, deleteAllAccount, addMoney, removeMoney, getHistoricalData }
+const functions = { genId, createAccount, addAccount, deleteAllAccount, addMoney, removeMoney, addStocks, getHistoricalData }
 
 DiscordClient.load(data, functions)
