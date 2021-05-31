@@ -127,6 +127,8 @@ schedule.scheduleJob("* * * * *", async() => {
 
         //Prices
         await fetch(getApi(financeData[i])).then(rep => {
+            if (!rep.ok) return
+
             rep.json().then(async(json) => {
                 if (!json) return
 
