@@ -143,7 +143,7 @@ schedule.scheduleJob("* * * * *", async() => {
 
                 data.prices.set(financeData[i].type, price, `${financeData[i].id}.prices`)
             })
-        })
+        }).catch(err => logger.error(`FETCH ERROR (Custom) ${err}`))
 
         logger.update({ message: `Ajout : ${financeData[i].id} (${financeData[i].type}) (${i+1}/${financeData.length}) (News fetched : ${newsFetched})`, end: i + 1 === financeData.length, startDate: startDate, traitementMaxTime: 10 })
     }
