@@ -23,6 +23,7 @@ module.exports = class clickButton {
 
             if ((goTo[2] === "action" || goTo[2] === "crypto") && !goTo[3]) {
                 await client.functions.typeEmbed(button.message, [], client, { name: goTo[2], type: "type", findBy: "name", data: null }, { action: actionList, crypto: cryptoList}, i18n, "edit")
+                
                 button.defer()
             } else if ((goTo[2] === "action" || goTo[2] === "crypto") && goTo[3]) {
                 const typeToFind = goTo[2] === "action" ? actionList : cryptoList
@@ -35,6 +36,28 @@ module.exports = class clickButton {
             } else {
                 button.message.edit("Erreur l'id est invalide")
                 button.defer()
+            }
+        } else if (button.id.startsWith("buy")) {
+            const type = button.id.split("_")
+
+            if (type[1] === "cancel") {
+                const confirm = new MessageButton()
+                    .setStyle("green")
+                    .setLabel("Cofirmer")
+                    .setID("buy_cancel")
+                    .setDisabled()
+    
+                const cancel = new MessageButton()
+                    .setStyle("red")
+                    .setLabel("Annuler")
+                    .setID("buy_cancel")
+                    .setDisabled()
+
+                button.reply.send("Vous avez refuser l'achat", { buttons: [ confirm, cancel ], type: 7 })
+            } else {
+                //set in data
+                //todo
+                console.log(button.id)
             }
         }
     }
