@@ -53,7 +53,7 @@ module.exports = class Buy extends Command {
         const confirm = new MessageButton()
             .setStyle("green")
             .setLabel("Cofirmer")
-            .setID(`buy_confirm_[${args[0]}_${convert}]_[${args[1]}]`)
+            .setID(`buy_confirm_(${find.type}_${args[0]}_${convert})_(${args[1]})`)
 
         const cancel = new MessageButton()
             .setStyle("red")
