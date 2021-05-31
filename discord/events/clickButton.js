@@ -55,6 +55,10 @@ module.exports = class clickButton {
 
                 button.reply.send("Vous avez refuser l'achat", { buttons: [ confirm, cancel ], type: 7 })
             } else {
+                //\(([^()]+)\)
+                //buy_confirm_(btc_0.00002719)_(20)
+                //            ________________ ___
+                
                 //set in data
                 //todo
                 console.log(button.id)
