@@ -140,21 +140,9 @@ module.exports = class Info extends Command {
 
             if (isType) {
                 return await typeEmbed(message, args, client, { name: args[0], type: "type", findBy: "name", data: null }, { action: actionList, crypto: cryptoList}, i18n, "lineReplyNoMention")
-            } else if (isCrypto) {
-                return await client.functions.actionCryptoEmbed(message, args, client, "crypto", isCrypto, i18n, "lineReplyNoMention")
-            } else if (isAction) {
-                return await client.functions.actionCryptoEmbed(message, args, client, "action", isAction, i18n, "lineReplyNoMention")
+            } else {
+                return await client.functions.actionCryptoEmbed(message, args, client, isCrypto ? "crypto" : "action", isCrypto ? isCrypto : isAction, i18n, "lineReplyNoMention")
             }
         }
     }
-}
-
-function sortDate(a, b, dayAgo) {
-    let distancea = Math.abs(dayAgo - a.date)
-    let distanceb = Math.abs(dayAgo - b.date)
-    return distancea - distanceb
-}
-
-function wait(ms) {
-    new Promise(res => setTimeout(res, ms))
 }
