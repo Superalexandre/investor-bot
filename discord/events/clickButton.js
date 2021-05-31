@@ -83,8 +83,6 @@ module.exports = class clickButton {
 
                 if (!removeMoney.success) return button.reply.send(removeMoney.error, { buttons: [ confirm, cancel ], type: 7 })
 
-                console.log(type, name, number)
-
                 const addStocks = await client.functions.addStocks(userID, type, name, number)
 
                 if (!addStocks.success) return button.reply.send(addStocks.error, { buttons: [ confirm, cancel ], type: 7 })
