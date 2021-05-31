@@ -9,9 +9,9 @@ module.exports = class clickButton {
     async run(button) {
         const client = this.client
 
-        if (button.id.startsWith("info_goto")) {
-            if (!button.clicker || !button.clicker?.user?.accountID) return button.defer()
+        if (!button.clicker || !button.clicker?.user?.accountID) return button.defer()
 
+        if (button.id.startsWith("info_goto")) {
             const goTo = button.id.split("_")
 
             const userData = await client.data.users.get(button.clicker.user.accountID)
@@ -55,13 +55,41 @@ module.exports = class clickButton {
 
                 button.reply.send("Vous avez refuser l'achat", { buttons: [ confirm, cancel ], type: 7 })
             } else {
-                //\(([^()]+)\)
-                //buy_confirm_(btc_0.00002719)_(20)
-                //            ________________ ___
-                
-                //set in data
-                //todo
-                console.log(button.id)
+                const userID = button.clicker.user.accountID
+
+                const regex = /\(([^()]+)\)/g
+                const splitId = button.id.match(regex)
+
+                const dollar = splitId[1].replace(/\(|\)/g, "")
+                const info = splitId[0].replace(/\(|\)/g, "").split("_")
+
+                const type = info[0]
+                const name = info[1]
+                const number = info[2]
+               
+                const confirm = new MessageButton()
+                    .setStyle("green")
+                    .setLabel("Cofirmer")
+                    .setID("buy_cancel")
+                    .setDisabled()
+    
+                const cancel = new MessageButton()
+                    .setStyle("red")
+                    .setLabel("Annuler")
+                    .setID("buy_cancel")
+                    .setDisabled()
+
+                const removeMoney = await client.functions.removeMoney(userID, dollar)
+
+                if (!removeMoney.success) return button.reply.send(removeMoney.error, { buttons: [ confirm, cancel ], type: 7 })
+
+                console.log(type, name, number)
+
+                const addStocks = await client.functions.addStocks(userID, type, name, number)
+
+                if (!addStocks.success) return button.reply.send(addStocks.error, { buttons: [ confirm, cancel ], type: 7 })
+
+                button.reply.send("Achat effectué avec succès", { buttons: [ confirm, cancel ], type: 7 })
             }
         }
     }
