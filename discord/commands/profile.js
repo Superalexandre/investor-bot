@@ -20,15 +20,17 @@ module.exports = class Profile extends Command {
             .setColor(client.config.colors.yellow)
             
 
-        if (!userData.stats) {
-            embed.addField(i18n.__("discord.profile.top3"), i18n.__("discord.profile.no_investment"))
-        } else if (userData.stats.length >= 3) {
-            embed.addField(i18n.__("discord.profile.top3"), "TODO")
-        } else if (userData.stats.length >= 5) {
-            embed.addField(i18n.__("discord.profile.top5"), "TODO")
-        } else if (userData.stats.length >= 10) {
-            embed.addField(i18n.__("discord.profile.top10"), "TODO")
-        }
+        //if (!userData.stats) {
+        //    embed.addField(i18n.__("discord.profile.top3"), i18n.__("discord.profile.no_investment"))
+        //} else if (userData.stats.length >= 3) {
+        //    embed.addField(i18n.__("discord.profile.top3"), "TODO")
+        //} else if (userData.stats.length >= 5) {
+        //    embed.addField(i18n.__("discord.profile.top5"), "TODO")
+        //} else if (userData.stats.length >= 10) {
+        //    embed.addField(i18n.__("discord.profile.top10"), "TODO")
+        //}
+
+        console.log(userData?.stocks?.crypto)
 
         message.lineReplyNoMention(embed)
     }
