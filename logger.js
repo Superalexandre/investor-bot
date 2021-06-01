@@ -68,4 +68,16 @@ module.exports = class Logger {
         
         if (end) logUpdate.done()
     }
+
+    static getColor(time, timeMax) {
+        if (time <= timeMax) {
+            //blue
+        } else if (time * 6 >= timeMax) {
+            //red
+        } else if (time * 4 >= timeMax) {
+            //magenta
+        } else if (time * 2 >= timeMax) {
+            //yellow
+        }
+    }
 }
