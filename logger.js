@@ -69,15 +69,15 @@ module.exports = class Logger {
         if (end) logUpdate.done()
     }
 
-    static getColor(time, timeMax) {
+    static getColor(time, timeMax, message) {
         if (time <= timeMax) {
-            //blue
+            colors.cyan(`             ${message}`)
         } else if (time * 6 >= timeMax) {
-            //red
+            colors.red(`             ${message}`)
         } else if (time * 4 >= timeMax) {
-            //magenta
+            colors.magenta(`             ${message}`)
         } else if (time * 2 >= timeMax) {
-            //yellow
+            colors.yellow(`             ${message}`)
         }
     }
 }
