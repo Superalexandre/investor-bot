@@ -99,30 +99,30 @@ schedule.scheduleJob("* * * * *", async() => {
         let newsFetched = false
         const lengthLanguages = Object.keys(config.languages).length
         for (const language in config.languages) {
-            
-            //if (!typeData.news.languages[language]) {
-            //    const updatedObj = Object.assign(data.prices.get(type, `${id}.news.languages`), { [language]: {} })
-            //
-            //    data.prices.set(financeData[i].type, updatedObj, `${id}.news.languages`)
-            //
-            //    typeData = data.prices.get(type, id)
-            //}
+            const diff = 10 * 60 * 60 * 1000
+            const lastFetch = typeData.news.lastFetch
+            if (Date.now() - lastFetch / diff >= 1) continue
 
-            if (Date.now() - typeData.news.lastFetch > 10 * 60 * 60 * 1000) continue
+            await fetch(`https://newsapi.org/v2/top-headlines?q=${financeData[i].name}&category=business&language=${config.languages[language].short}&apiKey=${config.tokens.news}`).then(rep => {
+                if (!rep.ok) return
+                
+                rep.json().then(json => {
+                    if (!json || !json.articles) return
 
-            const res = await fetch(`https://newsapi.org/v2/top-headlines?q=${financeData[i].name}&category=business&language=${config.languages[language].short}&apiKey=${config.tokens.news}`)
-            const json = await res.json()
+                    newsFetched = true
 
-            if (!json || !json.articles) continue
+                    if (j + 1 === lengthLanguages) {
+                        console.log(true)
 
-            newsFetched = true
+                        typeData = data.prices.set(financeData[i].type, Date.now(), `${financeData[i].id}.news.lastFetch`)
+                        j = 0
+                    }
 
-            if (j + 1 === lengthLanguages) {
-                typeData = data.prices.set(financeData[i].type, Date.now(), `${financeData[i].id}.news.lastFetch`)
-                j = 0
-            }
+                    j++
 
-            data.prices.set(financeData[i].type, json, `${financeData[i].id}.news.languages.${language}`)
+                    data.prices.set(financeData[i].type, json, `${financeData[i].id}.news.languages.${language}`)
+                })
+            }).catch(err => {})
         }
 
         //Prices
@@ -143,10 +143,11 @@ schedule.scheduleJob("* * * * *", async() => {
 
                 data.prices.set(financeData[i].type, price, `${financeData[i].id}.prices`)
             })
-        }).catch(err => logger.error(`FETCH ERROR (Custom) ${err}`))
+        }).catch(err => {})
 
         logger.update({ message: `Ajout : ${financeData[i].id} (${financeData[i].type}) (${i+1}/${financeData.length}) (News fetched : ${newsFetched})`, end: i + 1 === financeData.length, startDate: startDate, traitementMaxTime: 10 })
     }
+    //Database path
     /*
         prices: {
             crypto: {
