@@ -71,7 +71,7 @@ module.exports = class Logger {
 
     static getColor(time, timeMax) {
         if (time <= timeMax) {
-            colors.cyan(time + " secs")
+            return colors.cyan(time + " secs")
         } else if (time / 2 <= timeMax) {
             return colors.yellow(time + " secs")
         } else if (time / 5 <= timeMax || (time / 5 >= timeMax && time / 10 <= timeMax)) {
