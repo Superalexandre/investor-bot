@@ -41,8 +41,8 @@ module.exports = class Logger {
         console.log(` `)
         console.log(colors.cyan(`             L'utilisateur : "${message.author.username}" (${message.author.id}) ${cmd === "mention" ? 'vient de me mentionner' : 'a effectué la commande "' + prefix + cmd + '"'}`))
         console.log(colors.cyan(`             Date : ${formateDate()}`))
-        console.log(colors.cyan(`             Temps de traitement du message: ${messageTime >= 1 ? colors.red(`${messageTime}secs`) : colors.cyan(`${messageTime}secs`)}`))
-        console.log(colors.cyan(`             Temps de traitement de la commande: ${commandTime >= 1 ? colors.red(`${commandTime}secs`) : colors.cyan(`${commandTime}secs`)}`))
+        console.log(colors.cyan(`             Temps de traitement du message: ${this.getColor(messageTime, 1)}`))
+        console.log(colors.cyan(`             Temps de traitement de la commande: ${this.getColor(commandTime, 1)}`))
         console.log(colors.cyan(`             Serveur : "${message.guild.name}" (${message.guild.id})`))
         console.log(colors.cyan(`             Channel : "${message.channel.name}" (${message.channel.id})`))
         colors.reset()
@@ -57,7 +57,7 @@ module.exports = class Logger {
 
             text += `\n${colors.cyan(`             Début : ${formateDate(startDate)}`)}`
             text += `\n${colors.cyan(`             Fin : ${formateDate()}`)}`
-            text += `\n${colors.cyan(`             Traité en : ${traitementTime >= (traitementMaxTime || 20) ? colors.red(`${traitementTime}secs`) : colors.cyan(`${traitementTime}secs`)}`)}`
+            text += `\n${colors.cyan(`             Traité en : ${this.getColor(traitementTime, traitementMaxTime || 10)}`)}`
         } else {
             text += `\n${colors.cyan(`             Date : ${formateDate()}`)}`
         }
@@ -69,15 +69,15 @@ module.exports = class Logger {
         if (end) logUpdate.done()
     }
 
-    static getColor(time, timeMax, message) {
-        if (time <= timeMax) {
-            console.log(colors.cyan(`             ${message}`))
-        } else if (time * 2 >= timeMax) {
-            console.log(colors.yellow(`             ${message}`))
-        } else if (time * 4 >= timeMax) {
-            console.log(colors.magenta(`             ${message}`))
+    static getColor(time, timeMax) {
+        if (time / 2 <= timeMax) {
+            return colors.yellow(time + " secs")
+        } else if (time / 5 <= timeMax) {
+            return colors.magenta(time + " secs")
+        } else if (time / 10 <= timeMax) {
+            return colors.red(time + " secs")
         } else {
-            console.log(colors.red(`             ${message}`))
+            return colors.cyan(time + " secs")
         }
     }
 }
