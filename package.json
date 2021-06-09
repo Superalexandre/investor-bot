@@ -19,6 +19,7 @@
   "license": "ISC",
   "dependencies": {
     "@sentry/node": "^6.4.1",
+    "canvas": "^2.8.0",
     "colors": "^1.4.0",
     "date-fns": "^2.22.0",
     "date-fns-tz": "^1.1.4",
