@@ -1,5 +1,4 @@
 const Command = require("../structures/Command")
-
 const { MessageButton } = require("discord-buttons")
 
 module.exports = class Button extends Command {
